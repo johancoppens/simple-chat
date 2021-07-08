@@ -8,3 +8,4 @@ The goal of this project is twofold:
 ## Steps
 
 * [Setup Quasar Project](doc/step01.md)
+
