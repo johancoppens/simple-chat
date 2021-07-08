@@ -7,4 +7,4 @@ The goal of this project is twofold:
 
 ## Steps
 
-* [Setup Quasar Project](file://doc/step01.md)
+* [Setup Quasar Project](doc/step01.md)
