@@ -2,7 +2,7 @@
 
 In project root directory
 
-```
+```bash
 $ quasar --version
 1.2.1
 $ quasar create ui
