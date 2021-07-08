@@ -7,7 +7,7 @@ The goal of this project is twofold:
 
 ## Steps
 
-* [file://steps/step01.md](file://steps/setp01.md)
+* [file://doc/step01.md](file://doc/step01.md)
 
 
 
