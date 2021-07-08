@@ -8,4 +8,4 @@ The goal of this project is twofold:
 ## Steps
 
 * [Setup Quasar Project](doc/step01.md)
-
+* [Customize Default UI](doc/step02.md)

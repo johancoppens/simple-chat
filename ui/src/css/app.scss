@@ -1,1 +1,51 @@
 // app global css in SCSS form
+@import	url("https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Raleway:wght@100;200;300;400&display=swap");
+
+html {
+  font-size: 16px;
+}
+body {
+	font-family: 'Lexend Deca';
+}
+h1, .text-h1 {
+	font-family: 'Raleway';
+	font-weight: 300;
+	font-size: 2rem;
+	line-height: 2rem;
+}
+h2, .text-h2 {
+	font-family: 'Raleway';
+	font-weight: 300;
+	font-size: 1.75rem;
+	line-height: 1.75rem;
+}
+h3, .text-h3 {
+	font-family: 'Raleway';
+	font-weight: 400;
+	font-size: 1.2rem;
+	line-height: 1.2rem;
+}
+h4, .text-h4 {
+	font-family: 'Raleway';
+	font-weight: 400;
+	font-size: 1rem;
+	line-height: 1.2rem;
+}
+h5, .text-h5 {
+	font-family: 'Raleway';
+	font-weight: 400;
+	font-size: 0.75rem;
+	line-height: 1.2rem;
+}
+.q-toolbar__title {
+	font-family: 'Raleway';
+	font-weight: 400;
+}
+.q-item__label {
+	font-family: 'Raleway';
+	font-weight: 400;
+}
+.q-btn {
+	font-family: 'Raleway';
+	font-weight: 400;
+}
