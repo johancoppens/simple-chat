@@ -61,7 +61,9 @@ expressApp.get('/health-check', (req, res) => {
 // SocketCluster/WebSocket connection handling loop.
 (async () => {
   for await (let {socket} of agServer.listener('connection')) {
-    // Handle socket connection.
+    console.log(`Client with socket id ${socket.id} connected`)
+    // Attach pingpong module
+    require('./modules/pingpong').attach(agServer, socket)
   }
 })();
 
