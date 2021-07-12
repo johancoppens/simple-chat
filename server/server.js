@@ -64,6 +64,8 @@ expressApp.get('/health-check', (req, res) => {
     console.log(`Client with socket id ${socket.id} connected`)
     // Attach pingpong module
     require('./modules/pingpong').attach(agServer, socket)
+    // Attach auth module
+    require('./modules/auth').attach(agServer, socket)
   }
 })();
 
