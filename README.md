@@ -12,3 +12,4 @@ The goal of this project is twofold:
 * [Server Setup](doc/step03.md)
 * [Hook up our UI to the server](doc/step04.md)
 * [Authentication Flow](doc/step05.md)
+* [PostgreSQL Database](doc/step06.md)
