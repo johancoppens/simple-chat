@@ -13,6 +13,7 @@
     "eetase": "^4.0.0",
     "express": "^4.16.3",
     "install": "^0.13.0",
+    "knex": "^0.95.7",
     "morgan": "^1.7.0",
     "nodemon": "^2.0.7",
     "npm": "^7.17.0",
@@ -35,6 +36,7 @@
   "scripts": {
     "start": "node server.js",
     "start:watch": "./node_modules/nodemon/bin/nodemon.js server.js",
-    "start:docker": "./node_modules/nodemon/bin/nodemon.js /usr/src/app/server.js"
+    "start:docker": "./node_modules/nodemon/bin/nodemon.js /usr/src/app/server.js",
+    "start:db": "docker-compose -f ./postgres/docker-compose.yml up"
   }
 }

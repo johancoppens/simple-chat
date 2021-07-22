@@ -2,36 +2,59 @@
 
 In this section, we are going to set up PostgreSQL for the database implementation using Docker during development.
 
-## Install Docker
+## Install Docker and Compose
 
-Install Docker from [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
+Install Docker from [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/).
 
-## Building a Custom PostgreSQL Image
+Install Compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/). On Windows this is already included in Docker Desktop for Windows.
 
-Create a [Dockerfile](../server/postgres/Dockerfile)
+## Use docker-compose for Running both PostgreSQL ans PGAdmin
 
-Build the custom image simple-chat-postgres-image.
+Create a file [server/postgres/docker-compose.yml](../server/postgres/docker-compose.yml)
 
-```bash
-$ cd server/postgres
-$ docker build -t simple-chat-postgres-image .
-...
-Successfully tagged simple-chat-postgres-image:latest
+Add a line under de scripts section in [server/package.json](../server/package.json)
+
+```json
+"scripts": {
+    ...
+    "start:db": "docker-compose -f ./postgres/docker-compose.yml up"
+  }
 
 ```
 
-## Run a Container Based on Our Custom Image
-
-This command "installs" a container on your system based on our custom image.
+Run the script in the server directory.
 
 ```bash
-$ docker run --restart always -d -p 5432:5432 --name simple-chat-postgres simple-chat-postgres-image
+$ npm run start:db
 ```
 
-* --restart always: Always restart the container if it stops, also on system reboot. You can still manually stop/start.
-* -d: Run in background
-* -p 5432:5432 : Publish container's port 5432 to localhost's port 5432
-* --name simple-chat: Assign simple-chat-postgres as the name for the container
+The first time we run this script
+
+* Both the `postgres:13.3` and `dpage/pgadmin4` images are downloaded from (https://hub.docker.com/).
+
+* The docker-compose.yml is processed and the containers specified are configured.
+
+* Containers are started
+
+Now we can go to (http://localhost:8081/) to login to the PGAdmin console.
+
+Login with `localuser@example.org` and `Pa55word` like specified in the `docker-compose.yml` file.
+
+In PGAdmin:
+
+* Click Add New Server > General Tab
+  * Name: localpg
+* Click Connection tab
+  * Host name/address: localpg
+  * Port: 5432
+  * Username: postgres
+  * Password: Pa55word
+
+Note that from the PGAdmin's view, which runs in a docker container, the host for the PostgreSQL server is `localpg` and not `localhost`!
+
+We can stop PostgreSQL and PGAdmin by hitting Ctrl+C
+
+On subsequent runs, only the containers are restarted. Data will be preserved unless we delete the containers manually. See further.
 
 ## Test Access ;-) to our Database in NodeJS
 
@@ -51,7 +74,7 @@ $ node connection-test.js
 Hello world!
 ```
 
-If successful, we are basically ready to move on to the next part. Since we're going to be using [Knex.js](https://knexjs.org/) as an intermediate layer to access our database, we don't need to dig deeper into writing raw SQL queries.
+If successful, we are basically ready to move on to the next step. Since we're going to be using [Knex.js](https://knexjs.org/) as an intermediate layer to access our database, we don't need to dig deeper into writing raw SQL queries.
 
 Optionally, for reference, you can find more details about managing docker images and containers below.
 
@@ -61,16 +84,16 @@ List images on our system
 
 ```bash
 $ docker images
-REPOSITORY                   TAG       IMAGE ID       CREATED          SIZE
-simple-chat-postgres-image   latest    2fb03163471c   37 seconds ago   315MB
-postgres                     13.3      eeb5ef226f19   4 days ago       315MB
+REPOSITORY       TAG       IMAGE ID       CREATED       SIZE
+postgres         13.3      eeb5ef226f19   9 days ago    315MB
+dpage/pgadmin4   latest    20cef76099fd   10 days ago   249MB
 
 ```
 
-Remove our image, in case we want to rebuild it e.g. when something went wrong. I think it's a good idea is to stop running containers based on this image first. (See later)
+Remove an image
 
 ```
-$ docker rmi simple-chat-postgres-image:latest
+$ docker rmi postgres:13.3
 ```
 
 ## Manage Containers
@@ -78,7 +101,7 @@ $ docker rmi simple-chat-postgres-image:latest
 Manually stop|start|restart container simple-chat-postgres
 
 ```bash
-$ docker stop|start|restart simple-chat-postgres
+$ docker stop|start|restart postgres
 
 ```
 
@@ -86,32 +109,15 @@ List all containers
 
 ```bash
 $ docker ps -a
-CONTAINER ID   IMAGE                        COMMAND                  CREATED          STATUS        PORTS                    NAMES
-fa88bf79421d   simple-chat-postgres-image   "docker-entrypoint.s…"   39 seconds ago   Up 1 second   0.0.0.0:5432->5432/tcp   simple-chat-postgres
+CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS          PORTS                                                        NAMES
+f25de377610f   dpage/pgadmin4   "/entrypoint.sh"         33 minutes ago   Up 33 minutes   80/tcp, 443/tcp, 0.0.0.0:8081->8081/tcp, :::8081->8081/tcp   postgres_pgadmin_1
+823440e786c7   postgres:13.3    "docker-entrypoint.s…"   35 minutes ago   Up 33 minutes   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                    postgres_db
 
 ```
 
 Remove container. The container must be stopped first. The container is removed from your system so all internal data will be lost!
 
 ```bash
-$ docker rm simple-chat-postgres
+$ docker rm postgres_db
 
 ```
-
-## Notes
-
-Is the container still running after a reboot of our system?
-
-> Yes. Hence we used the `--restart always` flag when we issued `docker run`.
-
-Where is my data?
-
-> It is stored in the container and is preserved on restart and reboot. When you remove the container, the data is lost!
-
-Can I run multiple containers simultaneously based on the same image?
-
-> Yes. You only need to handle a different port mapping.
-
-Why Docker for development?
-> * Cross platform.
-> * Switch easily between other versions of a system.

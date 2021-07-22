@@ -1,3 +1,0 @@
-FROM postgres:13.3
-ENV POSTGRES_PASSWORD Pa55word
-ENV POSTGRES_DB simple-chat
