@@ -22,7 +22,7 @@ const verifyUser = async (credentials) => {
   try {
     const dbUser = await knex('users').where({
       'username': credentials.userName
-    })
+    }).debug()
     const user = dbUser[0]
     if (user && user.password === credentials.password ) {
       delete user.password

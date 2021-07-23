@@ -14,12 +14,9 @@ The goal of this project is twofold:
 * [Authentication Flow](doc/step05.md)
 * [PostgreSQL Database](doc/step06.md)
 * [KnexJS Integration](doc/step07.md)
+* [Chat with Pub/Sub](doc/step08.md)
 
 ## TODO
 
-Herbekijken docker (See https://github.com/Capitalisk/ldpos-knex-dal)
-  docker-compose gebruiken
-  auto remove containers when stopping project dev
-  integrating pgadmin
 
 http://johnatten.com/2015/04/22/use-postgres-json-type-and-aggregate-functions-to-map-relational-data-to-json/
