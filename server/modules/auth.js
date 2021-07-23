@@ -1,18 +1,12 @@
-const userDB = {
-  'john.doe': {
-    name: 'Doe',
-    firstName: 'John',
-    password: 'VerySecretPa55word',
-    roles: ['admin', 'user']
-  }
-}
+const knex = require('knex')(require('../knexfile'))
 
 const attach = (agServer, socket) => {
   ;(async () => {
     for await (let request of socket.procedure('login')) {
       console.log(`Login request from client ${socket.id}. Data: ${request.data.userName}`)
-      const user = verifyUser(request.data)
+      const user = await verifyUser(request.data)
       if (user) {
+        console.log(user)
         socket.setAuthToken(user)
         request.end("Login success")
       } else {
@@ -23,14 +17,21 @@ const attach = (agServer, socket) => {
   })()
 }
 
-const verifyUser = (credentials) => {
-  // Need a clone here, bacause we want to strip the password from the user object
-  // See https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/#_1-using-spread
-  const user = { ...userDB[credentials.userName] }
-  if (user && user.password === credentials.password ) {
-    delete user.password
-    return user
-  } else {
+// Async now!
+const verifyUser = async (credentials) => {
+  try {
+    const dbUser = await knex('users').where({
+      'username': credentials.userName
+    })
+    const user = dbUser[0]
+    if (user && user.password === credentials.password ) {
+      delete user.password
+      return user
+    } else {
+      return null
+    }
+  } catch (error) {
+    console.log(error)
     return null
   }
 }

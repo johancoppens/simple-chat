@@ -23,7 +23,7 @@ export default defineComponent({
   setup () {
     const sc = injectSC()
     const userName = ref('john.doe')
-    const password = ref('VerySecretPa55word')
+    const password = ref('Pa55word')
 
     const login = async () => {
       console.log('login')
