@@ -1,19 +1,20 @@
 <template lang="pug">
-q-page.row.yellow
+//- .flex.row.items-end
+//-   #list.q-mb-auto
+//-   #input
+q-page.column.no-wrap.yellow
   //- chat component
-  #chat.col.self-stretch.column.red.no-wrap
+  #chat.fit.column.green
     //- messages list component
-    #list.col-10.self-stretch.yellow
-      q-virtual-scroll(:items="messages" separator style="max-height: 300px;")
-        template(v-slot="{ item, index }")
-          q-item(:key="index")
-            q-item-section {{ item }}
+    #list.red
+      | list
+      //- template(v-slot="{ item, index }")
+      //-   q-item(:key="index")
+      //-     q-item-section {{ item }}
     //- input component
-    #input.col-2.yellow
-      .row.q-gutter-sm
-        .col-11
-          q-input(v-model="message" standout autogrow type="textarea" v-on:keyup.enter="sendMessage")
-        .col
+    #input.blue
+      q-input(v-model="message" standout autogrow type="textarea" v-on:keyup.enter="sendMessage")
+        slot(append)
           q-btn(label="send" color="secondary" @click="sendMessage")
 </template>
 
@@ -28,6 +29,7 @@ export default defineComponent({
     const user = sc.authToken
 
     const message = ref('default message')
+    const messageList = ref(null)
 
     const messages = reactive([
       "test",
@@ -44,7 +46,8 @@ export default defineComponent({
       user,
       message,
       messages,
-      sendMessage
+      sendMessage,
+      messageList
     }
   }
 })
@@ -52,13 +55,16 @@ export default defineComponent({
 
 <style scoped>
 .blue {
-  /* border: 1px solid blue; */
+  border: 1px solid blue;
 }
 .red{
-  /* border: 1px solid red; */
+  border: 1px solid red;
 }
 .yellow {
-  /* border: 1px solid yellow; */
+  border: 1px solid yellow;
+}
+.green {
+  border: 1px solid green;
 }
 #input {
   /* height: 100px; */
