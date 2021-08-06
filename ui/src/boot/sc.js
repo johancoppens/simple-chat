@@ -2,7 +2,7 @@ import * as client from 'socketcluster-client'
 import { inject } from 'vue'
 
 const socket = client.create({
-  hostname: 'localhost',
+  hostname: '192.168.0.30',
   port: 8000
 })
 
