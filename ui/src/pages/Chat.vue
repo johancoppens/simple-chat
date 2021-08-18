@@ -50,7 +50,7 @@ export default defineComponent({
     onMounted(() => {
       // Resize on component mounted
       resize()
-      // Socketcluster: listen foor messages on chatChannel
+      // Socketcluster: listen for messages on chatChannel
       ;(async () => {
         const channel = sc.subscribe('chatChannel')
         for await (const msg of channel) {
@@ -104,7 +104,7 @@ export default defineComponent({
     }
 
     // For flex layout to work properly we need some javascript to set maxHeight of scrollTargetRef
-    // Called on mount, window.resize listener and when message is send
+    // Called on mount, window.resize listener, resizing input when typing multiple lines and message is send
     const resize = () => {
       console.log('resizing')
       console.log(window.innerHeight)
@@ -113,7 +113,7 @@ export default defineComponent({
       scrollBottom()
     }
 
-    // Call resize on window resize
+    // Call resize code on window resize
     window.addEventListener('resize', resize)
 
     // Programmatically scroll to bottom of messages list
@@ -124,14 +124,17 @@ export default defineComponent({
     }
 
     return {
+      // Data
       user,
       message,
       messages,
+      // Methods
       sendMessage,
       loadHistory,
+      resize,
+      // DOM element refs
       scrollTargetRef,
-      inputRef,
-      resize
+      inputRef
     }
   }
 })
@@ -147,11 +150,5 @@ export default defineComponent({
 #list::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: rgb(110, 110, 110);
-}
-.q-message {
-  border-bottom: 1px solid #209cee !important;
-}
-.q-message-sent {
-  border-bottom: 1px solid #e91e63 !important;
 }
 </style>
