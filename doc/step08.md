@@ -1,6 +1,6 @@
 # Chat Fun!
 
-![caption](./assets/simple-chat.mp4?raw=true "test")
+![caption](./assets/simple-chat.mp4)
 
 First implementation of chat with Socketcluster's pub/sub functionality.
 
