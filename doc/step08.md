@@ -1,5 +1,7 @@
 # Chat Fun!
 
+![caption](./assets/simple-chat.mp4?raw=true "test")
+
 First implementation of chat with Socketcluster's pub/sub functionality.
 
 ```
