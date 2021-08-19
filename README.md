@@ -1,5 +1,7 @@
 # simple-chat
 
+![simple-chat](doc/assets/simple-chat640.apng)
+
 The goal of this project is twofold:
 
 * Started as a Proof of Concept for <https://github.com/Capitalisk/ldpos-chat>.
