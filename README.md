@@ -17,8 +17,3 @@ The goal of this project is twofold:
 * [PostgreSQL Database](doc/step06.md)
 * [KnexJS Integration](doc/step07.md)
 * [Chat with Pub/Sub](doc/step08.md)
-
-## TODO
-
-
-http://johnatten.com/2015/04/22/use-postgres-json-type-and-aggregate-functions-to-map-relational-data-to-json/
