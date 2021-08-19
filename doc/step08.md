@@ -4,6 +4,8 @@
 
 ![video](assets/simple-chat.gif)
 
+![video](assets/simple-chat.apng)
+
 First implementation of chat with Socketcluster's pub/sub functionality.
 
 ```
