@@ -3,7 +3,7 @@ import { inject } from 'vue'
 
 const socket = client.create({
   hostname: 'localhost',
-  // hostname: '192.168.0.30',
+  // hostname: '192.168.0.30', // Change this to the IP address of your dev computer if you want to test the app on another machine or mobile phone
   port: 8000
 })
 

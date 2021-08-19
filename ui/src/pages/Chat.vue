@@ -37,7 +37,7 @@ export default defineComponent({
     const sc = injectSC()
     const user = sc.authToken
 
-    // 
+    // Fake text
     const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 
     const message = ref()
@@ -54,7 +54,6 @@ export default defineComponent({
       ;(async () => {
         const channel = sc.subscribe('chatChannel')
         for await (const msg of channel) {
-          console.log(`Received msg on chatChannel: `, msg)
           // Message from myself?
           const username = msg.username === sc.authToken.username ? 'me' : msg.username
           const sent = msg.username === sc.authToken.username ? true : false
@@ -100,14 +99,12 @@ export default defineComponent({
           })
         }
         done() 
-      }, 1000)
+      }, 500)
     }
 
     // For flex layout to work properly we need some javascript to set maxHeight of scrollTargetRef
     // Called on mount, window.resize listener, resizing input when typing multiple lines and message is send
     const resize = () => {
-      console.log('resizing')
-      console.log(window.innerHeight)
       const inputHeight = inputRef.value.clientHeight
       scrollTargetRef.value.style.maxHeight = `${window.innerHeight - inputHeight - 50 }px` // 50px is the height of titlebar
       scrollBottom()
