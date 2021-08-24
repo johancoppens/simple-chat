@@ -6,7 +6,7 @@ const attach = (agServer, socket) => {
       console.log(`Login request from client ${socket.id}. Data: ${request.data.userName}`)
       const user = await verifyUser(request.data)
       if (user) {
-        console.log(user)
+        // console.log(user)
         socket.setAuthToken(user)
         request.end("Login success")
       } else {

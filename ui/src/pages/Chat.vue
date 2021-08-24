@@ -2,7 +2,8 @@
 q-page.column
   #chat.col.column
     #list.col.scroll.q-pa-sm(ref="scrollTargetRef")
-      q-infinite-scroll(@load="loadHistory" reverse :scroll-target="scrollTargetRef" :offset="50")
+      .text-center(v-if="historyLoaded") No more history to load
+      q-infinite-scroll(@load="loadHistory" reverse :scroll-target="scrollTargetRef" :offset="50" ref="vscrollRef" )
         template(v-slot:loading)
           .row.justify-center.q-my-md
             q-spinner-tail(size="50px" color="primary")
@@ -37,15 +38,18 @@ export default defineComponent({
     const sc = injectSC()
     const user = sc.authToken
 
-    // Fake text
-    const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-
-    const message = ref()
+    const message = ref('')
     const messages = reactive([])
+    const historyLoaded = ref(false)
 
     // Refs to DOM elements needed for resizing
     const scrollTargetRef = ref(null)
     const inputRef = ref(null)
+    const vscrollRef = ref(null)
+
+    const maxPages = 10         // how many pages we want to go back in history
+    const messagesPerPage = 10
+    let liveMessagesCount = 0   // To make a distinction bewteen live messages and those retreived from history
 
     onMounted(() => {
       // Resize on component mounted
@@ -53,53 +57,75 @@ export default defineComponent({
       // Socketcluster: listen for messages on chatChannel
       ;(async () => {
         const channel = sc.subscribe('chatChannel')
-        for await (const msg of channel) {
+        for await (const data of channel) {
+          // console.log(data)
           // Message from myself?
-          const username = msg.username === sc.authToken.username ? 'me' : msg.username
-          const sent = msg.username === sc.authToken.username ? true : false
+          const user = data.user === sc.authToken.username ? 'me' : data.user
+          const sent = data.user === sc.authToken.username ? true : false
           messages.push({
-            name: username,
-            avatar: `avatars/${msg.username}.jpeg`,
-            text: [msg.text],
+            name: user,
+            avatar: `avatars/${data.user}.jpeg`,
+            text: [data.id, data.message],
             sent: sent,
             bgColor: sent ? 'grey-8' : 'grey-9'
           })
+          liveMessagesCount++
           scrollBottom()
         }
       })()
     })
 
-    const sendMessage = () => {
-      const msg = {
-        username: sc.authToken.username,
-        text: message.value
+    const sendMessage = async () => {
+      try {
+        const res = await sc.invoke('chat/saveMessage', {
+          user: sc.authToken.username,
+          message: message.value
+        })
+      } catch (e) {
+        console.log(e)
       }
-      // Socketcluster: Send message to chatChannel
-      sc.transmitPublish('chatChannel', msg)
       message.value = ''
       resize()
     }
 
     // Called when user scrolls to top of scrollTargetRef
-    // Implemented as faker data, later on we'll replace this by getting history messages from the server
-    const loadHistory = (index, done) => {
-      // Get messages and add at beginning of messages array
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          const user = ['john.doe', 'jane.roe', 'james.doe'][Math.floor(Math.random() * 3)]
-          const username = user === sc.authToken.username ? 'me' : user
-          const sent = user === sc.authToken.username ? true : false
-          messages.unshift({
-            name: username,
-            avatar: `avatars/${user}.jpeg`,
-            text: [`History message ${i}: ${lorem}`],
-            stamp: '1 minute ago',
-            sent: sent,
-            bgColor: sent ? 'grey-8' : 'grey-9'
-          })
+    // async now!
+    const loadHistory = async (index, done) => {
+      // Calculate offset
+      const offset = ((index -1) * messagesPerPage)  + liveMessagesCount
+      try {
+        if(index <= maxPages) {
+          const res = await sc.invoke('chat/getMessages', { limit: messagesPerPage, offset: offset })
+          // console.log(res)
+          if(res.length > 0) {
+            for (let i = 0; i < res.length; i++) {
+              messages.unshift({
+                name: res[i].user === sc.authToken.username ? 'me' : res[i].user ,
+                avatar: `avatars/${res[i].user}.jpeg`,
+                text: [res[i].id, res[i].message],
+                stamp: res[i].createdAt,
+                sent: res[i].user === sc.authToken.username ? true : false,
+                bgColor: res[i].user === sc.authToken.username ? 'grey-8' : 'grey-9'
+              })
+            }
+          } else {
+            // No more messages to fetch, so stop virtual scroll
+            vscrollRef.value.stop()
+            historyLoaded.value = true
+          }
+        } else {
+          // maxPages reached. Stop virtual scroll
+          vscrollRef.value.stop()
+          historyLoaded.value = true
         }
+      }
+      catch (e) {
+        console.log(e)
+      }
+      // Add a little timeout to let the loading indicator have a chance to display
+      setTimeout(() => {
         done() 
-      }, 500)
+      }, 300)
     }
 
     // For flex layout to work properly we need some javascript to set maxHeight of scrollTargetRef
@@ -125,13 +151,15 @@ export default defineComponent({
       user,
       message,
       messages,
+      historyLoaded,
       // Methods
       sendMessage,
       loadHistory,
       resize,
       // DOM element refs
       scrollTargetRef,
-      inputRef
+      inputRef,
+      vscrollRef
     }
   }
 })

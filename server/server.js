@@ -66,6 +66,8 @@ expressApp.get('/health-check', (req, res) => {
     require('./modules/pingpong').attach(agServer, socket)
     // Attach auth module
     require('./modules/auth').attach(agServer, socket)
+    //Attach chat module
+    require('./modules/chat').attach(agServer, socket)
   }
 })();
 
