@@ -19,7 +19,7 @@ Technologies used:
 * [PostgreSQL](https://www.postgresql.org/)
 * [Knex.js](https://knexjs.org/)
 
-This project is built up in several steps. Each step has its own documentation that you can find in the [docs](https://github.com/johancoppens/simple-chat/tree/master/doc) folder. To follow along, a git label has been created for each step. To set the state of your local repo to the according step, you can use:
+This project is built up in several steps. Each step has its own documentation that you can find in the [docs](https://github.com/johancoppens/simple-chat/tree/master/doc) folder. To follow along, a git tag has been created for each step. To set the state of your local repo to the according step, you can use:
 
 ```bash
 $ git checkout step<xx>
