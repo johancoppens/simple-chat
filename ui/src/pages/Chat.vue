@@ -66,6 +66,7 @@ export default defineComponent({
             name: user,
             avatar: `avatars/${data.user}.jpeg`,
             text: [data.id, data.message],
+            stamp: data.createdAt,
             sent: sent,
             bgColor: sent ? 'grey-8' : 'grey-9'
           })
