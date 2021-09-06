@@ -1,8 +1,8 @@
 
 exports.up = async (knex) => {
   await knex.schema.createTable('users', (table) => {
-    table.string('username').primary()
-    table.string('password').notNullable()
+    table.string('address').primary()
+    table.string('username').notNullable()
   })
 }
 
