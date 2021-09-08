@@ -2,7 +2,7 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/PrivateChatLayout.vue'),
     children: [
       { path: '', name: 'chat', component: () => import('pages/Chat.vue') }
     ]

@@ -1,8 +1,7 @@
 <template lang="pug">
-q-layout(view='hHh LpR lFf')
+q-layout(view='lHh lpR lFf')
   q-header(elevated reveal)
     q-toolbar
-      q-btn.text-black(flat dense round icon='menu' aria-label='Menu' @click='toggleLeftDrawer')
       q-toolbar-title.text-black simple-chat
       q-item#avatar.rounded-borders(v-if="getUser")
         q-item-section
@@ -16,8 +15,11 @@ q-layout(view='hHh LpR lFf')
                       q-item-section {{ getUser() }}
                     q-item(clickable @click="logout")
                       q-item-section Logout
-  q-drawer.bg-grey-10(v-model='leftDrawerOpen' show-if-above='' bordered='')
-    div Drawer content
+  q-drawer.bg-grey-10(v-model='leftDrawerOpen' show-if-above mini bordered q-mini-drawer-only)
+    q-list(padding)
+      q-item(clickable v-ripple)
+        q-item-section(avatar)
+          q-img(:src="`avatars/${getUser()}.jpeg`")
   q-page-container
     router-view
 </template>
@@ -38,6 +40,9 @@ export default defineComponent({
     const getUser = () => {
       return sc.authToken.username ? sc.authToken.username : null;
     };
+
+    // TODO: Get friends related to our current user
+
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
