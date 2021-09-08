@@ -1,0 +1,16 @@
+{
+  "knex": {
+    "host": "localhost",
+    "port": "5432",
+    "database": "simple_chat",
+    "user": "maarten",
+    "password": "password"
+  },
+  "blockchain": {
+    "hostname": "capitalisk.com",
+    "port": 443,
+    "networkSymbol": "clsk",
+    "chainModuleName": "capitalisk_chain",
+    "secure": true
+  }
+}

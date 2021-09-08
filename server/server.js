@@ -7,7 +7,8 @@ const path = require('path');
 const morgan = require('morgan');
 const uuid = require('uuid');
 const sccBrokerClient = require('scc-broker-client');
-const fs = require('fs')
+const fs = require('fs');
+const { ExpressPeerServer } = require('peer');
 
 const ENVIRONMENT = process.env.ENV || 'dev';
 const SOCKETCLUSTER_PORT = process.env.SOCKETCLUSTER_PORT || 8000;
@@ -50,7 +51,12 @@ if (ENVIRONMENT === 'dev') {
   // Log every HTTP request. See https://github.com/expressjs/morgan for other
   // available formats.
   expressApp.use(morgan('dev'));
+} else {
+  // PeerJS Server, only for production
+  const peerServer = ExpressPeerServer({ path: '/webrtc' });
+  expressApp.use('/peerjs', peerServer);
 }
+
 expressApp.use(serveStatic(path.resolve(__dirname, 'public')));
 
 // Add GET /health-check express route
@@ -78,7 +84,7 @@ expressApp.get('/health-check', (req, res) => {
       if (!modules) return;
       for (let i = 0; i < modules.length; i++) {
         const m = modules[i];
-        require(`./modules/${m}`).attach(agServer, socket, knex);
+        require(`./modules/${m}`).attach(agServer, socket);
       }
     });
   }

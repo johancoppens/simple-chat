@@ -1,9 +1,9 @@
 const ldposClient = require('ldpos-client');
 const knex = require('knex')(require('../knexfile'));
-const config = require('../config.json');
+const { blockchain } = require('../config.json');
 
 const attach = (agServer, socket) => {
-  const client = ldposClient.createClient(config);
+  const client = ldposClient.createClient(blockchain);
 
   (async () => {
     for await (let request of socket.procedure('login')) {

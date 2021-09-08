@@ -1,15 +1,11 @@
+const { knex } = require('./config.json');
+
 module.exports = {
   client: 'postgresql',
-  connection: {
-    host:     'localhost',
-    port:     '5432',
-    database: 'simple-chat',
-    user:     'postgres',
-    password: 'Pa55word'
-  },
+  connection: knex,
   pool: {
     min: 2,
-    max: 10
+    max: 10,
   },
   migrations: {
     tableName: 'knex_migrations',
@@ -17,6 +13,5 @@ module.exports = {
   },
   seeds: {
     directory: __dirname + '/knex/seeds',
-  }
-}
-
+  },
+};
