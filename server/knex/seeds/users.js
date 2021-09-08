@@ -1,8 +1,11 @@
 exports.seed = async (knex) => {
   await knex('users').del()
   await knex('users').insert([
-    { username: 'john.doe', password: 'Pa55word'},
-    { username: 'jane.roe', password: 'Pa55word'},
-    { username: 'james.doe', password: 'Pa55word'}
+    // enable network ramp play luxury output purchase town excess uncle cash code
+    { address: 'clsk74ff6b9d692ceaae69dbd13b68e99d649c6f1d64', username: 'john.doe'},
+    // wave lunch legend attitude stomach unusual mammal suggest point snake mass crazy
+    { address: 'clskc2017f03c4c326663ca674786f4ccafb95c0f179', username: 'jane.roe'},
+    // foil caution high catalog exchange shadow dad job adult loud able gate
+    { address: 'clsk9df1cdfe0aa846be05974a6b285722edb8676347', username: 'james.doe'}
   ])
 }
