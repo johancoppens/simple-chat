@@ -1,0 +1,7 @@
+{
+  "hostname": "capitalisk.com",
+  "port": 443,
+  "networkSymbol": "clsk",
+  "chainModuleName": "capitalisk_chain",
+  "secure": true
+}

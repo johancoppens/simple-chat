@@ -1,39 +1,65 @@
-const knex = require('knex')(require('../knexfile'))
+const ldposClient = require('ldpos-client');
+const knex = require('knex')(require('../knexfile'));
+const config = require('../config.json');
 
 const attach = (agServer, socket) => {
-  ;(async () => {
+  const client = ldposClient.createClient(config);
+
+  (async () => {
     for await (let request of socket.procedure('login')) {
-      console.log(`Login request from client ${socket.id}. Data: ${request.data.userName}`)
-      const user = await verifyUser(request.data)
-      if (user) {
-        // console.log(user)
-        socket.setAuthToken(user)
-        request.end("Login success")
-      } else {
-        request.end("Login failed")
-      }
-      
-    }
-  })()
-}
+      (async () => {
+        console.log(
+          `Login request from client ${socket.id}. Data: ${request.data.passphrase}`,
+        );
+        try {
+          /**
+           * Verify if passphrase is valid
+           */
+          if (!client.validatePassphrase(request.data.passphrase))
+            return request.end({ success: false, error: 'Invalid passphrase' });
 
-// Async now!
-const verifyUser = async (credentials) => {
-  try {
-    const dbUser = await knex('users').where({
-      'username': credentials.userName
-    }).debug()
-    const user = dbUser[0]
-    if (user && user.password === credentials.password ) {
-      delete user.password
-      return user
-    } else {
-      return null
-    }
-  } catch (error) {
-    console.log(error)
-    return null
-  }
-}
+          /**
+           * Get client's address based on the passphrase
+           */
+          await client.connect({ passphrase: request.data.passphrase });
+          const address = client.getWalletAddress();
+          client.disconnect();
 
-exports.attach = attach
+          /**
+           * If username is provided in the request we need to register the user
+           * If it isn't provided we need to get the user
+           */
+          let user;
+          if (request.data.username) {
+            user = {
+              address,
+              username: request.data.username,
+            };
+
+            await knex('users').insert(user);
+          } else {
+            user = await knex('users').where({ address }).first();
+
+            /**
+             * Check if user exists, if not we request the register form
+             */
+            if (!user) return request.end({ registerClient: true });
+          }
+
+          /**
+           * Set auth token for user and end the request succesfully
+           */
+          if (user) {
+            socket.setAuthToken(user);
+            return request.end({ success: true });
+          }
+          request.end({ success: false });
+        } catch (error) {
+          request.end({ success: false, error });
+        }
+      })();
+    }
+  })();
+};
+
+exports.attach = attach;
