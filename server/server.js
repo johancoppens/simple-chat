@@ -84,6 +84,7 @@ expressApp.get('/health-check', (req, res) => {
       if (!modules) return;
       for (let i = 0; i < modules.length; i++) {
         const m = modules[i];
+        console.log(`Attaching ${m}`)
         require(`./modules/${m}`).attach(agServer, socket);
       }
     });
